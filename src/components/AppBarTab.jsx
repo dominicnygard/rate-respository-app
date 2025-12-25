@@ -1,20 +1,22 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Text from "./Text";
+import { Link } from "react-router-native";
+import Constants from "expo-constants";
 
 const styles = StyleSheet.create({
   item: {
-    flex: 1,
-    alignItems: "left",
-    justifyContent: "left",
+    paddingHorizontal: Constants.statusBarHeight * 0.33,
   },
 });
 
-const AppBarTab = ({ text }) => {
+const AppBarTab = ({ text, link }) => {
   return (
     <View style={styles.item}>
-      <Pressable onPress={() => console.log("pressed")}>
-        <Text style={{ color: "#ffffff", fontWeight: "bold" }}>{text}</Text>
-      </Pressable>
+      <Link to={link}>
+        <Text color="textThird" fontWeight="bold">
+          {text}
+        </Text>
+      </Link>
     </View>
   );
 };
