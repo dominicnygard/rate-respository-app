@@ -1,4 +1,6 @@
 import { View, StyleSheet, ScrollView } from "react-native";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthProviderContext";
 import Constants from "expo-constants";
 import theme from "../theme";
 
@@ -16,11 +18,16 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+  const { state } = useContext(AuthContext);
   return (
     <View style={styles.container}>
       <ScrollView horizontal style={{ flex: 1 }}>
         <AppBarTab text={"Repositories"} link={"/"} />
-        <AppBarTab text={"Sign in"} link={"/signin"} />
+        {!state.isAuthenticated ? (
+          <AppBarTab text={"Sign in"} link={"/signin"} />
+        ) : (
+          <AppBarTab text={"Sign out"} link={"/signout"} />
+        )}
       </ScrollView>
     </View>
   );
