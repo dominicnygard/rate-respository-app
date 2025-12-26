@@ -23,9 +23,15 @@ const AppBar = () => {
       <ScrollView horizontal style={{ flex: 1 }}>
         <AppBarTab text={"Repositories"} link={"/"} />
         {!state.isAuthenticated ? (
-          <AppBarTab text={"Sign in"} link={"/signin"} />
+          <>
+            <AppBarTab text={"Sign in"} link={"/signin"} />
+            <AppBarTab text={"Sign up"} link={"/signup"} />
+          </>
         ) : (
-          <AppBarTab text={"Sign out"} link={"/signout"} />
+          <>
+            <AppBarTab text={"Create a review"} link={"/review"} />
+            <AppBarTab text={"Sign out"} link={"/signout"} />
+          </>
         )}
       </ScrollView>
     </View>

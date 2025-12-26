@@ -1,119 +1,40 @@
-import { View, Text, Image, StyleSheet } from "react-native";
-import theme from "../../theme";
+import { Text, FlatList, View, StyleSheet } from "react-native";
+import { useParams } from "react-router-native";
+import useRepository from "../../hooks/useRepository";
+
+import RepositoryInfo from "./RepositoryInfo";
+
+import ReviewItem from "./ReviewItem";
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 6,
-    padding: 16,
-    marginVertical: 8,
-    marginHorizontal: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  topRow: {
-    flexDirection: "row",
-    marginBottom: 12,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 4,
-    marginRight: 16,
-  },
-  info: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  name: {
-    color: theme.colors.textPrimary,
-    fontWeight: "bold",
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  description: {
-    color: theme.colors.textSecondary,
-    marginBottom: 6,
-  },
-  languageBadge: {
-    alignSelf: "flex-start",
-    backgroundColor: theme.colors.primary,
-    color: "#fff",
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    overflow: "hidden",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 12,
-  },
-  stat: {
-    alignItems: "center",
-    flex: 1,
-  },
-  statValue: {
-    fontWeight: "bold",
-    fontSize: 15,
-  },
-  statLabel: {
-    color: theme.colors.textSecondary,
-    fontSize: 13,
+  separator: {
+    height: 10,
   },
 });
 
-const formatCount = (count) =>
-  count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count;
+const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryItem = ({ item }) => (
-  <View testID="repositoryItem" style={styles.card}>
-    <View style={styles.topRow}>
-      <Image source={{ uri: item.ownerAvatarUrl }} style={styles.avatar} />
-      <View style={styles.info}>
-        <Text testID="repositoryName" style={styles.name}>
-          {item.fullName}
-        </Text>
-        <Text testID="repositoryDescription" style={styles.description}>
-          {item.description}
-        </Text>
-        <Text testID="repositoryLanguage" style={styles.languageBadge}>
-          {item.language}
-        </Text>
-      </View>
-    </View>
-    <View style={styles.statsRow}>
-      <View style={styles.stat}>
-        <Text testID="repositoryStargazers" style={styles.statValue}>
-          {formatCount(item.stargazersCount)}
-        </Text>
-        <Text style={styles.statLabel}>Stars</Text>
-      </View>
-      <View style={styles.stat}>
-        <Text testID="repositoryForks" style={styles.statValue}>
-          {formatCount(item.forksCount)}
-        </Text>
-        <Text style={styles.statLabel}>Forks</Text>
-      </View>
-      <View style={styles.stat}>
-        <Text testID="repositoryReviews" style={styles.statValue}>
-          {item.reviewCount}
-        </Text>
-        <Text style={styles.statLabel}>Reviews</Text>
-      </View>
-      <View style={styles.stat}>
-        <Text testID="repositoryRating" style={styles.statValue}>
-          {item.ratingAverage}
-        </Text>
-        <Text style={styles.statLabel}>Rating</Text>
-      </View>
-    </View>
-  </View>
-);
+const SingleRepository = () => {
+  const { id } = useParams();
+  const { repository, loading, error } = useRepository(id);
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error loading repository</Text>;
 
-export default RepositoryItem;
+  const reviewNodes = repository.reviews
+    ? repository.reviews.edges.map((edge) => edge.node)
+    : [];
+
+  return (
+    <FlatList
+      data={reviewNodes}
+      ItemSeparatorComponent={ItemSeparator}
+      renderItem={({ item }) => <ReviewItem review={item} />}
+      keyExtractor={({ id }) => id}
+      ListHeaderComponent={() => (
+        <RepositoryInfo item={repository} singleView={true} />
+      )}
+    />
+  );
+};
+
+export default SingleRepository;
