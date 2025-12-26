@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-native";
-import useSignOut from "../hooks/useSignOut";
+import useSignOut from "../../../hooks/useSignOut";
 import { useEffect } from "react";
 
 const SignOut = () => {

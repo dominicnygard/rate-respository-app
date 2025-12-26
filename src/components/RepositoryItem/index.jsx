@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import theme from "../theme";
+import theme from "../../theme";
 
 const styles = StyleSheet.create({
   card: {
@@ -72,32 +72,44 @@ const formatCount = (count) =>
   count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count;
 
 const RepositoryItem = ({ item }) => (
-  <View style={styles.card}>
+  <View testID="repositoryItem" style={styles.card}>
     <View style={styles.topRow}>
       <Image source={{ uri: item.ownerAvatarUrl }} style={styles.avatar} />
       <View style={styles.info}>
-        <Text style={styles.name}>{item.fullName}</Text>
-        <Text style={styles.description}>{item.description}</Text>
-        <Text style={styles.languageBadge}>{item.language}</Text>
+        <Text testID="repositoryName" style={styles.name}>
+          {item.fullName}
+        </Text>
+        <Text testID="repositoryDescription" style={styles.description}>
+          {item.description}
+        </Text>
+        <Text testID="repositoryLanguage" style={styles.languageBadge}>
+          {item.language}
+        </Text>
       </View>
     </View>
     <View style={styles.statsRow}>
       <View style={styles.stat}>
-        <Text style={styles.statValue}>
+        <Text testID="repositoryStargazers" style={styles.statValue}>
           {formatCount(item.stargazersCount)}
         </Text>
         <Text style={styles.statLabel}>Stars</Text>
       </View>
       <View style={styles.stat}>
-        <Text style={styles.statValue}>{formatCount(item.forksCount)}</Text>
+        <Text testID="repositoryForks" style={styles.statValue}>
+          {formatCount(item.forksCount)}
+        </Text>
         <Text style={styles.statLabel}>Forks</Text>
       </View>
       <View style={styles.stat}>
-        <Text style={styles.statValue}>{item.reviewCount}</Text>
+        <Text testID="repositoryReviews" style={styles.statValue}>
+          {item.reviewCount}
+        </Text>
         <Text style={styles.statLabel}>Reviews</Text>
       </View>
       <View style={styles.stat}>
-        <Text style={styles.statValue}>{item.ratingAverage}</Text>
+        <Text testID="repositoryRating" style={styles.statValue}>
+          {item.ratingAverage}
+        </Text>
         <Text style={styles.statLabel}>Rating</Text>
       </View>
     </View>
