@@ -13,3 +13,16 @@ export const REPOSITORY_DETAILS = gql`
     stargazersCount
   }
 `;
+
+export const REVIEW_DETAILS = gql`
+  fragment reviewDetails on Review {
+    id
+    rating
+    text
+    createdAt
+    user {
+      id
+      username
+    }
+  }
+`;

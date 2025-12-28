@@ -1,38 +1,33 @@
-import { Text, FlatList, View, StyleSheet } from "react-native";
 import { useParams } from "react-router-native";
 import useRepository from "../../hooks/useRepository";
-
-import RepositoryInfo from "./RepositoryInfo";
-
-import ReviewItem from "./ReviewItem";
-
-const styles = StyleSheet.create({
-  separator: {
-    height: 10,
-  },
-});
-
-const ItemSeparator = () => <View style={styles.separator} />;
+import ReviewList from "../ReviewList";
 
 const SingleRepository = () => {
   const { id } = useParams();
-  const { repository, loading, error } = useRepository(id);
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error loading repository</Text>;
+  const { repository, fetchMore, refetch, loading } = useRepository({
+    id,
+    first: 10,
+  });
 
-  const reviewNodes = repository.reviews
+  if (loading && !repository) {
+    return null;
+  }
+
+  const reviewNodes = repository?.reviews
     ? repository.reviews.edges.map((edge) => edge.node)
     : [];
 
+  const onEndReach = () => {
+    fetchMore();
+  };
+
   return (
-    <FlatList
-      data={reviewNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={({ item }) => <ReviewItem review={item} />}
-      keyExtractor={({ id }) => id}
-      ListHeaderComponent={() => (
-        <RepositoryInfo item={repository} singleView={true} />
-      )}
+    <ReviewList
+      repository={repository}
+      reviewNodes={reviewNodes}
+      singleView={false}
+      onEndReach={onEndReach}
+      refetch={refetch}
     />
   );
 };

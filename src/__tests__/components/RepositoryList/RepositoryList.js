@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { RepositoryListContainer } from "../../../components/RepositoryList";
 
 describe("RepositoryList", () => {
@@ -47,7 +48,13 @@ describe("RepositoryList", () => {
         ],
       };
 
-      render(<RepositoryListContainer repositories={repositories} />);
+      render(
+        <SafeAreaProvider>
+          <RepositoryListContainer repositories={repositories} />
+        </SafeAreaProvider>
+      );
+
+      screen.debug();
 
       const repositoryNames = screen.getAllByTestId("repositoryName");
       expect(repositoryNames[0]).toHaveTextContent("jaredpalmer/formik");

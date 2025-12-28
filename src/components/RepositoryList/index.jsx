@@ -14,38 +14,6 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-/*
-export const RepositoryListContainer = ({
-  repositories,
-  setSorting,
-  searchQuery,
-  setSearchQuery,
-}) => {
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
-
-  return (
-    <FlatList
-      data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={({ item }) => (
-        <RepositoryInfo item={item} singleView={false} />
-      )}
-      keyExtractor={(item) => item.id}
-      ListHeaderComponent={() => (
-        <>
-          <SearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-          <SorterPicker setSorting={setSorting} />
-        </>
-      )}
-    />
-  );
-};*/
-
 export class RepositoryListContainer extends React.Component {
   renderHeader = () => {
     const props = this.props;
@@ -77,6 +45,9 @@ export class RepositoryListContainer extends React.Component {
         )}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={this.renderHeader}
+        onEndReached={props.onEndReach}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={repositoryNodes.length}
       />
     );
   }
@@ -87,15 +58,24 @@ const RepositoryList = () => {
     orderBy: "CREATED_AT",
     orderDirection: "DESC",
   });
-  const [searchQuery, setSearchQuery] = useState("");
-  const { repositories } = useRepositories(sorting, searchQuery);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const { repositories, fetchMore } = useRepositories({
+    searchKeyword,
+    first: 8,
+    ...sorting,
+  });
+
+  const onEndReach = () => {
+    fetchMore();
+  };
 
   return (
     <RepositoryListContainer
       repositories={repositories}
       setSorting={setSorting}
-      searchQuery={searchQuery}
-      setSearchQuery={setSearchQuery}
+      searchQuery={searchKeyword}
+      setSearchQuery={setSearchKeyword}
+      onEndReach={onEndReach}
     />
   );
 };

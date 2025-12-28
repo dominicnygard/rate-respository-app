@@ -30,6 +30,7 @@ const AppBar = () => {
         ) : (
           <>
             <AppBarTab text={"Create a review"} link={"/review"} />
+            <AppBarTab text={"My reviews"} link={"/review/me"} />
             <AppBarTab text={"Sign out"} link={"/signout"} />
           </>
         )}
